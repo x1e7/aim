@@ -1,0 +1,1645 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2D AIM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Oswald:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+    }
+    body {
+      background: #07080a;
+      background-image:
+        radial-gradient(circle at 20% 0%, rgba(140, 20, 20, 0.10) 0%, transparent 50%),
+        radial-gradient(circle at 80% 100%, rgba(120, 10, 10, 0.08) 0%, transparent 55%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Oswald', 'Segoe UI', sans-serif;
+      padding: 12px;
+      overflow: hidden;
+    }
+    .app-container {
+      background: #0e1013;
+      background-image: linear-gradient(180deg, #121419 0%, #0a0c0f 100%);
+      border-radius: 20px;
+      box-shadow:
+        0 24px 60px rgba(0, 0, 0, 0.95),
+        0 0 0 1px #2a1010 inset,
+        0 0 80px rgba(160, 20, 20, 0.08);
+      padding: 16px 20px 20px 20px;
+      max-width: 1340px;
+      width: fit-content;
+      margin: 0 auto;
+      position: relative;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #301818;
+      position: relative;
+    }
+    .header::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -1px;
+      width: 120px;
+      height: 1px;
+      background: linear-gradient(90deg, #b02020, transparent);
+      box-shadow: 0 0 12px #b02020;
+    }
+    .logo-area {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+    }
+    .logo {
+      font-family: 'Russo One', 'Oswald', sans-serif;
+      font-weight: 400;
+      font-size: 24px;
+      letter-spacing: 3px;
+      color: #e8e2dc;
+      text-transform: uppercase;
+      text-shadow: 0 0 18px rgba(200, 40, 40, 0.35), 0 2px 4px rgba(0,0,0,0.8);
+    }
+    .logo .accent {
+      color: #d43535;
+      text-shadow: 0 0 22px rgba(220, 50, 50, 0.7);
+    }
+    .badge {
+      background: linear-gradient(180deg, #241010, #180a0a);
+      color: #c89898;
+      font-family: 'Oswald', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      padding: 5px 14px;
+      border-radius: 4px;
+      border: 1px solid #4a1c1c;
+      text-transform: uppercase;
+      box-shadow: 0 0 14px rgba(180, 30, 30, 0.15) inset;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .lang-btn {
+      background: linear-gradient(180deg, #1c1414, #140c0c);
+      border: 1px solid #4a2020;
+      color: #c8a8a8;
+      font-family: 'Oswald', sans-serif;
+      font-weight: 600;
+      font-size: 11px;
+      padding: 7px 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: all 0.15s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.7);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .lang-btn:hover {
+      background: linear-gradient(180deg, #2a1818, #1c1010);
+      border-color: #7a3030;
+      color: #e8e2dc;
+      box-shadow: 0 0 14px rgba(200, 40, 40, 0.2);
+    }
+    .lang-btn .lang-flag {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      color: #d43535;
+      font-size: 12px;
+    }
+    .stats {
+      display: flex;
+      gap: 24px;
+      color: #8a7a7a;
+      font-family: 'Oswald', sans-serif;
+      font-weight: 500;
+      font-size: 13px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      background: linear-gradient(180deg, #16181c, #101214);
+      padding: 8px 24px;
+      border-radius: 6px;
+      border: 1px solid #2a1a1a;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.6), 0 0 0 1px rgba(140, 20, 20, 0.1) inset;
+    }
+    .stat-item {
+      display: flex;
+      align-items: center;
+    }
+    .stat-item span {
+      color: #e8e2dc;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      margin-left: 8px;
+      letter-spacing: 0.5px;
+      font-size: 14px;
+      text-shadow: 0 0 10px rgba(200, 60, 60, 0.3);
+    }
+    .stat-item:first-child span { color: #d43535; text-shadow: 0 0 14px rgba(220, 50, 50, 0.5); }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px 22px;
+      margin-bottom: 14px;
+      background: linear-gradient(180deg, #101216, #0b0d10);
+      padding: 10px 18px;
+      border-radius: 8px;
+      border: 1px solid #221414;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+    }
+    .mode-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .label {
+      color: #7a6666;
+      font-family: 'Oswald', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-right: 6px;
+    }
+    .btn {
+      background: linear-gradient(180deg, #1a1c20, #131518);
+      border: 1px solid #3a2020;
+      color: #b8a8a8;
+      font-family: 'Oswald', sans-serif;
+      font-weight: 500;
+      font-size: 12px;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.7);
+      position: relative;
+    }
+    .btn:hover {
+      background: linear-gradient(180deg, #24262a, #1a1c20);
+      border-color: #6a2828;
+      color: #e8e2dc;
+      box-shadow: 0 0 14px rgba(180, 40, 40, 0.15);
+    }
+    .btn.active {
+      background: linear-gradient(180deg, #3a1414, #250c0c);
+      border-color: #b03030;
+      color: #fff;
+      box-shadow: 0 0 18px rgba(200, 40, 40, 0.4), 0 0 0 1px rgba(220, 60, 60, 0.3) inset;
+      text-shadow: 0 0 10px rgba(255, 100, 100, 0.5);
+    }
+    .settings-btn {
+      margin-left: auto;
+      background: linear-gradient(180deg, #1c1414, #140c0c);
+      border-color: #4a2020;
+      padding: 8px 18px;
+      color: #c0a0a0;
+    }
+    .settings-btn:hover {
+      background: linear-gradient(180deg, #2a1818, #1c1010);
+      border-color: #7a3030;
+      color: #e8e2dc;
+    }
+
+    .canvas-wrapper {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow:
+        0 0 0 1px #2a1414,
+        0 16px 40px rgba(0, 0, 0, 0.9),
+        0 0 60px rgba(160, 20, 20, 0.06);
+    }
+    canvas {
+      display: block;
+      background: #0a0c0f;
+      cursor: none;
+      width: 100%;
+      height: auto;
+    }
+    .overlay-label {
+      position: absolute;
+      bottom: 14px;
+      left: 18px;
+      background: rgba(10, 6, 6, 0.82);
+      backdrop-filter: blur(8px);
+      padding: 6px 16px;
+      border-radius: 4px;
+      border: 1px solid #4a2020;
+      color: #c89898;
+      font-family: 'Oswald', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      pointer-events: none;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.7);
+    }
+    .overlay-right {
+      position: absolute;
+      bottom: 14px;
+      right: 18px;
+      background: rgba(10, 6, 6, 0.72);
+      backdrop-filter: blur(8px);
+      padding: 6px 16px;
+      border-radius: 4px;
+      border: 1px solid #302020;
+      color: #8a7070;
+      font-family: 'Oswald', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 1.5px;
+      pointer-events: none;
+      text-transform: uppercase;
+    }
+    .mode-tag {
+      position: absolute;
+      top: 16px;
+      left: 20px;
+      background: rgba(10, 6, 6, 0.78);
+      backdrop-filter: blur(8px);
+      padding: 6px 18px;
+      border-radius: 4px;
+      border: 1px solid #5a2828;
+      color: #e0c8c8;
+      font-family: 'Russo One', sans-serif;
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      pointer-events: none;
+      box-shadow: 0 0 16px rgba(180, 30, 30, 0.15);
+    }
+    .tracking-indicator {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      background: rgba(10, 6, 6, 0.78);
+      backdrop-filter: blur(8px);
+      padding: 6px 18px;
+      border-radius: 4px;
+      border: 1px solid #2a5a3a;
+      color: #c8e0cc;
+      font-family: 'Oswald', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      pointer-events: none;
+      display: none;
+      box-shadow: 0 0 16px rgba(40, 180, 90, 0.2);
+    }
+    .tracking-indicator.active { display: block; }
+    .tracking-indicator span {
+      font-family: 'JetBrains Mono', monospace;
+      color: #6aff9a;
+      font-weight: 700;
+    }
+
+    .settings-panel {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 340px;
+      height: 100%;
+      background: linear-gradient(180deg, rgba(14, 10, 10, 0.98), rgba(8, 6, 6, 0.99));
+      backdrop-filter: blur(14px);
+      border-left: 1px solid #4a1c1c;
+      border-radius: 0 20px 20px 0;
+      padding: 22px 20px;
+      transform: translateX(100%);
+      transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 100;
+      box-shadow: -16px 0 50px rgba(0, 0, 0, 0.85), 0 0 40px rgba(160, 20, 20, 0.06) inset;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+    }
+    .settings-panel::-webkit-scrollbar { width: 6px; }
+    .settings-panel::-webkit-scrollbar-track { background: #0a0808; }
+    .settings-panel::-webkit-scrollbar-thumb { background: #3a1c1c; border-radius: 3px; }
+    .settings-panel::-webkit-scrollbar-thumb:hover { background: #5a2828; }
+    .settings-panel.open { transform: translateX(0); }
+
+    .settings-title {
+      font-family: 'Russo One', sans-serif;
+      font-size: 15px;
+      font-weight: 400;
+      color: #e8e2dc;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      border-bottom: 1px solid #3a1818;
+      padding-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+    }
+    .settings-title::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -1px;
+      width: 60px;
+      height: 1px;
+      background: #b02020;
+      box-shadow: 0 0 10px #b02020;
+    }
+    .close-settings {
+      background: none;
+      border: none;
+      color: #7a5050;
+      font-size: 22px;
+      cursor: pointer;
+      padding: 0 4px;
+      font-family: inherit;
+      line-height: 1;
+      transition: color 0.15s;
+    }
+    .close-settings:hover { color: #e06060; }
+
+    .settings-section {
+      font-family: 'Oswald', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: #c84040;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      margin-top: 4px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid #2a1414;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .settings-section::before {
+      content: '';
+      width: 4px;
+      height: 4px;
+      background: #b02020;
+      border-radius: 50%;
+      box-shadow: 0 0 6px #b02020;
+    }
+    .setting-row {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .setting-row label {
+      color: #9a8282;
+      font-family: 'Oswald', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+    }
+    .setting-row label span {
+      color: #e8e2dc;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      letter-spacing: 0;
+      font-size: 12px;
+    }
+    .setting-row input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, #2a1414, #1a0e0e);
+      border-radius: 3px;
+      outline: none;
+      border: 1px solid #3a1c1c;
+    }
+    .setting-row input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 15px;
+      height: 15px;
+      border-radius: 3px;
+      background: linear-gradient(180deg, #d84040, #8a1c1c);
+      cursor: pointer;
+      box-shadow: 0 0 12px rgba(200, 40, 40, 0.7), 0 0 0 1px #2a0a0a;
+      transform: rotate(45deg);
+    }
+    .setting-row input[type="range"]::-moz-range-thumb {
+      width: 13px;
+      height: 13px;
+      border-radius: 3px;
+      background: linear-gradient(180deg, #d84040, #8a1c1c);
+      cursor: pointer;
+      box-shadow: 0 0 12px rgba(200, 40, 40, 0.7);
+      border: none;
+      transform: rotate(45deg);
+    }
+    .setting-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #3a1818, transparent);
+      margin: 4px 0;
+    }
+    .presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .presets .btn {
+      font-size: 10px;
+      padding: 6px 10px;
+      letter-spacing: 1px;
+    }
+    .settings-note {
+      color: #6a5656;
+      font-family: 'Oswald', sans-serif;
+      font-size: 10.5px;
+      line-height: 1.6;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      padding: 10px;
+      background: rgba(140, 20, 20, 0.06);
+      border-left: 2px solid #7a2020;
+      border-radius: 3px;
+    }
+    .reset-settings-btn {
+      background: linear-gradient(180deg, #2a1010, #180808);
+      border-color: #5a2020;
+      color: #d0a0a0;
+      font-size: 12px;
+      padding: 10px;
+      margin-top: 8px;
+      letter-spacing: 2px;
+    }
+    .reset-settings-btn:hover {
+      background: linear-gradient(180deg, #3a1414, #250c0c);
+      border-color: #8a3030;
+      color: #f0c0c0;
+      box-shadow: 0 0 18px rgba(200, 40, 40, 0.25);
+    }
+  </style>
+</head>
+<body>
+<div class="app-container">
+  <div class="header">
+    <div class="logo-area">
+      <div class="logo" data-i18n="logo">СТРЕЛЬБИЩЕ <span class="accent">// 3D</span></div>
+      <div class="badge" data-i18n="badge">ТАКТИЧЕСКИЙ ТРЕНАЖЁР</div>
+    </div>
+    <div class="header-right">
+      <button class="lang-btn" id="langToggle"><span class="lang-flag" id="langFlag">RU</span><span id="langLabel">ЯЗЫК</span></button>
+      <div class="stats">
+        <div class="stat-item"><span data-i18n="scoreLabel">ОЧКИ</span><span id="scoreDisplay">0</span></div>
+        <div class="stat-item"><span data-i18n="accuracyLabel">ТОЧН.</span><span id="accuracyDisplay">100%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="mode-group">
+      <span class="label" data-i18n="modeLabel">РЕЖИМ</span>
+      <button class="btn active" data-mode="flick" data-i18n="modeFlick">ФЛИК</button>
+      <button class="btn" data-mode="tracking" data-i18n="modeTracking">ТРЕКИНГ</button>
+      <button class="btn" data-mode="gridshot" data-i18n="modeGrid">СЕТКА</button>
+    </div>
+    <button class="btn settings-btn" id="settingsToggle" data-i18n="settingsBtn">НАСТРОЙКИ</button>
+  </div>
+
+  <div class="canvas-wrapper">
+    <canvas id="gameCanvas" width="1280" height="720"></canvas>
+    <div class="mode-tag" id="modeTag" data-i18n="modeTagFlick">ФЛИК</div>
+    <div class="tracking-indicator" id="trackingIndicator"><span data-i18n="trackingLabel">УДЕРЖАНИЕ</span> <span id="trackingValue">0.0</span>с</div>
+    <div class="overlay-label" id="recoilIndicator" data-i18n="recoilLow">ОТДАЧА: НИЗКАЯ</div>
+    <div class="overlay-right" data-i18n="resetHint">R / СБРОС</div>
+  </div>
+
+  <div class="settings-panel" id="settingsPanel">
+    <div class="settings-title">
+      <span data-i18n="settingsTitle">НАСТРОЙКИ</span>
+      <button class="close-settings" id="closeSettings">×</button>
+    </div>
+
+    <div class="settings-section" data-i18n="sectionGeneral">ОБЩИЕ</div>
+
+    <div class="setting-row">
+      <label><span data-i18n="sensitivity">ЧУВСТВИТЕЛЬНОСТЬ</span> <span id="sensValue">3.00</span></label>
+      <input type="range" id="sensSlider" min="0.10" max="10.00" step="0.05" value="3.00">
+    </div>
+    <div class="presets">
+      <button class="btn" data-sens="0.80" data-i18n="sensLow">НИЗКАЯ</button>
+      <button class="btn" data-sens="2.00" data-i18n="sensMid">СРЕДНЯЯ</button>
+      <button class="btn active" data-sens="3.00" data-i18n="sensDefault">СТАНДАРТ</button>
+      <button class="btn" data-sens="5.00" data-i18n="sensHigh">ВЫСОКАЯ</button>
+      <button class="btn" data-sens="8.00" data-i18n="sensVeryHigh">ОЧ.ВЫС.</button>
+    </div>
+
+    <div class="setting-divider"></div>
+
+    <div class="settings-section" data-i18n="sectionCrosshair">ПРИЦЕЛ</div>
+
+    <div class="setting-row">
+      <label><span data-i18n="crosshairSize">РАЗМЕР</span> <span id="crosshairSizeValue">12</span></label>
+      <input type="range" id="crosshairSizeSlider" min="4" max="30" step="1" value="12">
+    </div>
+    <div class="setting-row">
+      <label><span data-i18n="crosshairGap">РАЗРЫВ</span> <span id="crosshairGapValue">6</span></label>
+      <input type="range" id="crosshairGapSlider" min="0" max="20" step="1" value="6">
+    </div>
+    <div class="setting-row">
+      <label><span data-i18n="crosshairThickness">ТОЛЩИНА</span> <span id="crosshairThicknessValue">2.2</span></label>
+      <input type="range" id="crosshairThicknessSlider" min="1" max="6" step="0.1" value="2.2">
+    </div>
+    <div class="setting-row">
+      <label data-i18n="crosshairColor">ЦВЕТ</label>
+      <div class="presets" id="colorPresets">
+        <button class="btn active" data-color="#d43535" data-i18n="colorRed">КРАСНЫЙ</button>
+        <button class="btn" data-color="#e8e2dc" data-i18n="colorWhite">БЕЛЫЙ</button>
+        <button class="btn" data-color="#e6b85c" data-i18n="colorGold">ЗОЛОТО</button>
+        <button class="btn" data-color="#4ade80" data-i18n="colorGreen">ЗЕЛЁНЫЙ</button>
+        <button class="btn" data-color="#3db4e6" data-i18n="colorBlue">СИНИЙ</button>
+      </div>
+    </div>
+
+    <div class="setting-divider"></div>
+
+    <div class="settings-section" data-i18n="sectionFlick">РЕЖИМ «ФЛИК»</div>
+
+    <div class="setting-row">
+      <label><span data-i18n="flickCount">КОЛ-ВО ЦЕЛЕЙ</span> <span id="flickCountValue">1</span></label>
+      <input type="range" id="flickCountSlider" min="1" max="5" step="1" value="1">
+    </div>
+    <div class="setting-row">
+      <label><span data-i18n="flickSize">РАЗМЕР ЦЕЛИ</span> <span id="flickSizeValue">1.15</span></label>
+      <input type="range" id="flickSizeSlider" min="0.5" max="2.5" step="0.05" value="1.15">
+    </div>
+    <div class="setting-row">
+      <label><span data-i18n="flickRespawn">ЗАДЕРЖКА</span> <span id="flickRespawnValue">70</span> <span data-i18n="msUnit">мс</span></label>
+      <input type="range" id="flickRespawnSlider" min="0" max="500" step="10" value="70">
+    </div>
+
+    <div class="setting-divider"></div>
+
+    <div class="settings-section" data-i18n="sectionTracking">РЕЖИМ «ТРЕКИНГ»</div>
+
+    <div class="setting-row">
+      <label><span data-i18n="trackSpeed">СКОРОСТЬ</span> <span id="trackSpeedValue">1.0</span>×</label>
+      <input type="range" id="trackSpeedSlider" min="0.3" max="3.0" step="0.1" value="1.0">
+    </div>
+    <div class="setting-row">
+      <label><span data-i18n="trackSize">РАЗМЕР ЦЕЛИ</span> <span id="trackSizeValue">1.15</span></label>
+      <input type="range" id="trackSizeSlider" min="0.5" max="2.5" step="0.05" value="1.15">
+    </div>
+    <div class="setting-row">
+      <label><span data-i18n="trackScore">ОЧКИ/СЕК</span> <span id="trackScoreValue">10</span></label>
+      <input type="range" id="trackScoreSlider" min="1" max="30" step="1" value="10">
+    </div>
+
+    <div class="setting-divider"></div>
+
+    <div class="settings-section" data-i18n="sectionGrid">РЕЖИМ «СЕТКА»</div>
+
+    <div class="setting-row">
+      <label><span data-i18n="gridCount">КОЛ-ВО ЦЕЛЕЙ</span> <span id="gridCountValue">3</span></label>
+      <input type="range" id="gridCountSlider" min="1" max="8" step="1" value="3">
+    </div>
+    <div class="setting-row">
+      <label><span data-i18n="gridSize">РАЗМЕР ЦЕЛИ</span> <span id="gridSizeValue">1.15</span></label>
+      <input type="range" id="gridSizeSlider" min="0.5" max="2.5" step="0.05" value="1.15">
+    </div>
+    <div class="setting-row">
+      <label><span data-i18n="gridRespawn">ЗАДЕРЖКА</span> <span id="gridRespawnValue">100</span> <span data-i18n="msUnit">мс</span></label>
+      <input type="range" id="gridRespawnSlider" min="0" max="500" step="10" value="100">
+    </div>
+
+    <div class="setting-divider"></div>
+
+    <div class="settings-section" data-i18n="sectionRecoil">ОТДАЧА</div>
+
+    <div class="setting-row">
+      <label><span data-i18n="recoilIntensity">ИНТЕНСИВНОСТЬ</span> <span id="recoilIntensityValue">1.0</span>×</label>
+      <input type="range" id="recoilIntensitySlider" min="0.0" max="2.5" step="0.1" value="1.0">
+    </div>
+
+    <div class="settings-note" data-i18n="settingsNote">
+      ЧУВСТВИТЕЛЬНОСТЬ управляет скоростью движения прицела за мышью. Настройки режимов применяются мгновенно и сбрасывают текущую сессию.
+    </div>
+
+    <button class="btn reset-settings-btn" id="resetSettingsBtn" data-i18n="resetSettings">СБРОСИТЬ НАСТРОЙКИ</button>
+  </div>
+</div>
+
+<script>
+  (function(){
+    const translations = {
+      ru: {
+        logo: 'СТРЕЛЬБИЩЕ <span class="accent">// 3D</span>',
+        badge: 'ТАКТИЧЕСКИЙ ТРЕНАЖЁР',
+        scoreLabel: 'ОЧКИ',
+        accuracyLabel: 'ТОЧН.',
+        modeLabel: 'РЕЖИМ',
+        modeFlick: 'ФЛИК',
+        modeTracking: 'ТРЕКИНГ',
+        modeGrid: 'СЕТКА',
+        settingsBtn: 'НАСТРОЙКИ',
+        modeTagFlick: 'ФЛИК',
+        modeTagTracking: 'ТРЕКИНГ',
+        modeTagGrid: 'СЕТКА',
+        trackingLabel: 'УДЕРЖАНИЕ',
+        recoilLow: 'ОТДАЧА: НИЗКАЯ',
+        recoilMedium: 'ОТДАЧА: СРЕДНЯЯ',
+        recoilHigh: 'ОТДАЧА: ВЫСОКАЯ',
+        resetHint: 'R / СБРОС',
+        settingsTitle: 'НАСТРОЙКИ',
+        sectionGeneral: 'ОБЩИЕ',
+        sensitivity: 'ЧУВСТВИТЕЛЬНОСТЬ',
+        sensLow: 'НИЗКАЯ',
+        sensMid: 'СРЕДНЯЯ',
+        sensDefault: 'СТАНДАРТ',
+        sensHigh: 'ВЫСОКАЯ',
+        sensVeryHigh: 'ОЧ.ВЫС.',
+        sectionCrosshair: 'ПРИЦЕЛ',
+        crosshairSize: 'РАЗМЕР',
+        crosshairGap: 'РАЗРЫВ',
+        crosshairThickness: 'ТОЛЩИНА',
+        crosshairColor: 'ЦВЕТ',
+        colorRed: 'КРАСНЫЙ',
+        colorWhite: 'БЕЛЫЙ',
+        colorGold: 'ЗОЛОТО',
+        colorGreen: 'ЗЕЛЁНЫЙ',
+        colorBlue: 'СИНИЙ',
+        sectionFlick: 'РЕЖИМ «ФЛИК»',
+        flickCount: 'КОЛ-ВО ЦЕЛЕЙ',
+        flickSize: 'РАЗМЕР ЦЕЛИ',
+        flickRespawn: 'ЗАДЕРЖКА',
+        msUnit: 'мс',
+        sectionTracking: 'РЕЖИМ «ТРЕКИНГ»',
+        trackSpeed: 'СКОРОСТЬ',
+        trackSize: 'РАЗМЕР ЦЕЛИ',
+        trackScore: 'ОЧКИ/СЕК',
+        sectionGrid: 'РЕЖИМ «СЕТКА»',
+        gridCount: 'КОЛ-ВО ЦЕЛЕЙ',
+        gridSize: 'РАЗМЕР ЦЕЛИ',
+        gridRespawn: 'ЗАДЕРЖКА',
+        sectionRecoil: 'ОТДАЧА',
+        recoilIntensity: 'ИНТЕНСИВНОСТЬ',
+        settingsNote: 'ЧУВСТВИТЕЛЬНОСТЬ управляет скоростью движения прицела за мышью. Настройки режимов применяются мгновенно и сбрасывают текущую сессию.',
+        resetSettings: 'СБРОСИТЬ НАСТРОЙКИ',
+        langLabel: 'ЯЗЫК',
+        langCode: 'RU'
+      },
+      en: {
+        logo: 'AIM RANGE <span class="accent">// 3D</span>',
+        badge: 'TACTICAL TRAINER',
+        scoreLabel: 'SCORE',
+        accuracyLabel: 'ACC',
+        modeLabel: 'MODE',
+        modeFlick: 'FLICK',
+        modeTracking: 'TRACKING',
+        modeGrid: 'GRID',
+        settingsBtn: 'SETTINGS',
+        modeTagFlick: 'FLICK',
+        modeTagTracking: 'TRACKING',
+        modeTagGrid: 'GRID SHOT',
+        trackingLabel: 'TRACKING',
+        recoilLow: 'RECOIL: LOW',
+        recoilMedium: 'RECOIL: MEDIUM',
+        recoilHigh: 'RECOIL: HIGH',
+        resetHint: 'R / RESET',
+        settingsTitle: 'SETTINGS',
+        sectionGeneral: 'GENERAL',
+        sensitivity: 'SENSITIVITY',
+        sensLow: 'LOW',
+        sensMid: 'MID',
+        sensDefault: 'DEFAULT',
+        sensHigh: 'HIGH',
+        sensVeryHigh: 'V.HIGH',
+        sectionCrosshair: 'CROSSHAIR',
+        crosshairSize: 'SIZE',
+        crosshairGap: 'GAP',
+        crosshairThickness: 'THICKNESS',
+        crosshairColor: 'COLOR',
+        colorRed: 'RED',
+        colorWhite: 'WHITE',
+        colorGold: 'GOLD',
+        colorGreen: 'GREEN',
+        colorBlue: 'BLUE',
+        sectionFlick: 'FLICK MODE',
+        flickCount: 'TARGET COUNT',
+        flickSize: 'TARGET SIZE',
+        flickRespawn: 'RESPAWN DELAY',
+        msUnit: 'ms',
+        sectionTracking: 'TRACKING MODE',
+        trackSpeed: 'SPEED',
+        trackSize: 'TARGET SIZE',
+        trackScore: 'SCORE/SEC',
+        sectionGrid: 'GRID SHOT MODE',
+        gridCount: 'TARGET COUNT',
+        gridSize: 'TARGET SIZE',
+        gridRespawn: 'RESPAWN DELAY',
+        sectionRecoil: 'RECOIL',
+        recoilIntensity: 'INTENSITY',
+        settingsNote: 'SENSITIVITY controls crosshair movement speed per mouse movement. Mode settings apply instantly and reset the current session.',
+        resetSettings: 'RESET SETTINGS',
+        langLabel: 'LANG',
+        langCode: 'EN'
+      }
+    };
+
+    let currentLang = localStorage.getItem('aimTrainerLang') || 'ru';
+    if (!translations[currentLang]) currentLang = 'ru';
+
+    function applyTranslations() {
+      const t = translations[currentLang];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (t[key] !== undefined) {
+          if (key === 'logo') el.innerHTML = t[key];
+          else el.textContent = t[key];
+        }
+      });
+      document.getElementById('langFlag').textContent = t.langCode;
+      document.getElementById('langLabel').textContent = t.langLabel;
+      document.documentElement.lang = currentLang;
+      document.title = currentLang === 'ru'
+        ? 'СТРЕЛЬБИЩЕ // 3D ТАКТИЧЕСКИЙ ТРЕНАЖЁР'
+        : 'AIM RANGE // 3D TACTICAL TRAINER';
+      updateModeTag();
+      updateRecoilIndicator();
+    }
+
+    document.getElementById('langToggle').addEventListener('click', () => {
+      currentLang = currentLang === 'ru' ? 'en' : 'ru';
+      localStorage.setItem('aimTrainerLang', currentLang);
+      applyTranslations();
+    });
+
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const scoreSpan = document.getElementById('scoreDisplay');
+    const accSpan = document.getElementById('accuracyDisplay');
+    const recoilIndicator = document.getElementById('recoilIndicator');
+    const modeTag = document.getElementById('modeTag');
+    const trackingIndicator = document.getElementById('trackingIndicator');
+    const trackingValue = document.getElementById('trackingValue');
+
+    const W = canvas.width;
+    const H = canvas.height;
+
+    let currentMode = 'flick';
+    let score = 0;
+    let shotsFired = 0;
+    let hits = 0;
+
+    const DEFAULTS = {
+      sensitivity: 3.00,
+      crosshairSize: 12,
+      crosshairGap: 6,
+      crosshairThickness: 2.2,
+      crosshairColor: '#d43535',
+      flickCount: 1,
+      flickSize: 1.15,
+      flickRespawn: 70,
+      trackSpeed: 1.0,
+      trackSize: 1.15,
+      trackScore: 10,
+      gridCount: 3,
+      gridSize: 1.15,
+      gridRespawn: 100,
+      recoilIntensity: 1.0
+    };
+    const settings = { ...DEFAULTS };
+
+    let targets = [];
+    let effects = [];
+
+    let recoilPitch = 0;
+    let recoilYaw = 0;
+    let crosshairKickX = 0;
+    let crosshairKickY = 0;
+
+    const RECOIL_RECOVERY = 0.90;
+    const CROSSHAIR_RECOVERY = 0.86;
+
+    const WEAPON = {
+      name: 'AK-47',
+      recoilPitch: 0.0105,
+      recoilYaw: 0.0038,
+      crosshairKick: 9,
+      fireRate: 105,
+      color: '#d43535',
+      spread: 0.003
+    };
+
+    let trackingTime = 0;
+    let trackingOnTarget = false;
+    let trackingAccumTimer = 0;
+    let trackingHits = 0;
+    let trackingTotalTicks = 0;
+
+    const clamp = (v,a,b)=>Math.min(b,Math.max(a,v));
+    const rand = (a,b)=>a+Math.random()*(b-a);
+
+    const CAMERA_FOV = 1.35;
+    const NEAR = 0.5;
+
+    function project(x, y, z) {
+      const cosY = Math.cos(-recoilYaw), sinY = Math.sin(-recoilYaw);
+      let x1 = x * cosY - z * sinY;
+      let z1 = x * sinY + z * cosY;
+      let y1 = y;
+      const cosP = Math.cos(-recoilPitch), sinP = Math.sin(-recoilPitch);
+      let y2 = y1 * cosP - z1 * sinP;
+      let z2 = y1 * sinP + z1 * cosP;
+      if (z2 < NEAR) return null;
+      const f = (H / 2) / Math.tan(CAMERA_FOV / 2);
+      const sx = (x1 / z2) * f + W / 2;
+      const sy = (-y2 / z2) * f + H / 2;
+      return { x: sx, y: sy, z: z2, scale: f / z2 };
+    }
+
+    function makeTarget(x, y, z, size, type) {
+      return { x, y, z, vx:0, vy:0, radius:size, type, life:Infinity, maxLife:Infinity };
+    }
+
+    function randomWorldPos(zMin, zMax) {
+      return { x: rand(-9,9), y: rand(-4.5,4.5), z: rand(zMin, zMax) };
+    }
+
+    function updateModeTag() {
+      const t = translations[currentLang];
+      if (currentMode === 'flick') modeTag.textContent = t.modeTagFlick;
+      else if (currentMode === 'tracking') modeTag.textContent = t.modeTagTracking;
+      else modeTag.textContent = t.modeTagGrid;
+    }
+
+    function updateRecoilIndicator() {
+      const t = translations[currentLang];
+      const total = Math.abs(recoilPitch) * 100 + Math.abs(recoilYaw) * 100;
+      if (total > 1.2) recoilIndicator.textContent = t.recoilHigh;
+      else if (total > 0.45) recoilIndicator.textContent = t.recoilMedium;
+      else recoilIndicator.textContent = t.recoilLow;
+    }
+
+    function resetTargets() {
+      targets = [];
+      effects = [];
+      recoilPitch = 0; recoilYaw = 0;
+      crosshairKickX = 0; crosshairKickY = 0;
+      trackingTime = 0;
+      trackingOnTarget = false;
+      trackingAccumTimer = 0;
+      trackingHits = 0;
+      trackingTotalTicks = 0;
+      trackingIndicator.classList.toggle('active', currentMode === 'tracking');
+      updateModeTag();
+      updateRecoilIndicator();
+
+      if (currentMode === 'flick') {
+        const count = settings.flickCount;
+        for (let i = 0; i < count; i++) {
+          const p = randomWorldPos(14, 30);
+          targets.push(makeTarget(p.x, p.y, p.z, settings.flickSize, 'flick'));
+        }
+      } else if (currentMode === 'tracking') {
+        const p = randomWorldPos(14, 26);
+        const t = makeTarget(p.x, p.y, p.z, settings.trackSize, 'tracking');
+        const angle = rand(0, Math.PI*2);
+        const baseSpeed = rand(1.8, 3.2) * settings.trackSpeed;
+        t.vx = Math.cos(angle) * baseSpeed;
+        t.vy = Math.sin(angle) * baseSpeed;
+        targets.push(t);
+      } else if (currentMode === 'gridshot') {
+        spawnGridTargets(settings.gridCount, settings.gridSize);
+      }
+    }
+
+    function spawnGridTargets(count, size) {
+      const positions = [];
+      for (let i = 0; i < count; i++) {
+        const cols = Math.ceil(Math.sqrt(count));
+        const idx = i;
+        const col = idx % cols;
+        const row = Math.floor(idx / cols);
+        const totalRows = Math.ceil(count / cols);
+        const gx = (col / Math.max(1, cols - 1) - 0.5) * 18 + rand(-1.5, 1.5);
+        const gy = (row / Math.max(1, totalRows - 1) - 0.5) * 9 + rand(-1.0, 1.0);
+        const gz = 18 + rand(-3, 6);
+        positions.push({ x: gx, y: gy, z: gz });
+      }
+      positions.forEach(p => {
+        targets.push(makeTarget(p.x, p.y, p.z, size, 'grid'));
+      });
+    }
+
+    function updateRecoil() {
+      recoilPitch *= RECOIL_RECOVERY;
+      recoilYaw *= RECOIL_RECOVERY;
+      if (Math.abs(recoilPitch) < 0.0002) recoilPitch = 0;
+      if (Math.abs(recoilYaw) < 0.0002) recoilYaw = 0;
+      crosshairKickX *= CROSSHAIR_RECOVERY;
+      crosshairKickY *= CROSSHAIR_RECOVERY;
+      if (Math.abs(crosshairKickX) < 0.2) crosshairKickX = 0;
+      if (Math.abs(crosshairKickY) < 0.2) crosshairKickY = 0;
+      updateRecoilIndicator();
+    }
+
+    function applyRecoil() {
+      const rI = settings.recoilIntensity;
+      recoilPitch += WEAPON.recoilPitch * (0.7 + Math.random() * 0.6) * rI;
+      recoilYaw += (Math.random() - 0.5) * WEAPON.recoilYaw * 2 * rI;
+      crosshairKickX += (Math.random() - 0.5) * WEAPON.crosshairKick * 2.2 * rI;
+      crosshairKickY -= WEAPON.crosshairKick * (1.2 + Math.random() * 0.8) * rI;
+      recoilPitch = clamp(recoilPitch, -0.35, 0.35);
+      recoilYaw = clamp(recoilYaw, -0.35, 0.35);
+    }
+
+    function screenToWorldRay(sx, sy) {
+      const f = (H / 2) / Math.tan(CAMERA_FOV / 2);
+      const dirCam = { x: (sx - W/2) / f, y: -(sy - H/2) / f, z: 1 };
+      const cosP = Math.cos(recoilPitch), sinP = Math.sin(recoilPitch);
+      let dy1 = dirCam.y * cosP - dirCam.z * sinP;
+      let dz1 = dirCam.y * sinP + dirCam.z * cosP;
+      let dx1 = dirCam.x;
+      const cosY = Math.cos(recoilYaw), sinY = Math.sin(recoilYaw);
+      let dx2 = dx1 * cosY + dz1 * sinY;
+      let dz2 = -dx1 * sinY + dz1 * cosY;
+      let dy2 = dy1;
+      const len = Math.hypot(dx2, dy2, dz2);
+      return { x: dx2/len, y: dy2/len, z: dz2/len };
+    }
+
+    function raySphereIntersect(origin, dir, center, radius) {
+      const oc = { x: origin.x-center.x, y: origin.y-center.y, z: origin.z-center.z };
+      const a = dir.x*dir.x + dir.y*dir.y + dir.z*dir.z;
+      const b = 2*(oc.x*dir.x + oc.y*dir.y + oc.z*dir.z);
+      const c = oc.x*oc.x + oc.y*oc.y + oc.z*oc.z - radius*radius;
+      const disc = b*b - 4*a*c;
+      if (disc < 0) return false;
+      const t = (-b - Math.sqrt(disc)) / (2*a);
+      return t > 0.1;
+    }
+
+    function handleShot(mouseScreenX, mouseScreenY) {
+      effects.push({
+        type:'flash', x:mouseScreenX, y:mouseScreenY,
+        life:1.0, maxLife:1.0, color:WEAPON.color,
+        size:22 + WEAPON.crosshairKick * 1.5
+      });
+
+      applyRecoil();
+
+      const aimScreenX = mouseScreenX + crosshairKickX * 0.6;
+      const aimScreenY = mouseScreenY + crosshairKickY * 0.6;
+      const rayDir = screenToWorldRay(aimScreenX, aimScreenY);
+      const origin = { x:0, y:0, z:0 };
+
+      let hitSomething = false;
+
+      for (let i = targets.length - 1; i >= 0; i--) {
+        const t = targets[i];
+        const spreadX = (Math.random()-0.5)*WEAPON.spread;
+        const spreadY = (Math.random()-0.5)*WEAPON.spread;
+        const dir = { x: rayDir.x+spreadX, y: rayDir.y+spreadY, z: rayDir.z };
+        const len = Math.hypot(dir.x, dir.y, dir.z);
+        dir.x/=len; dir.y/=len; dir.z/=len;
+
+        if (raySphereIntersect(origin, dir, t, t.radius)) {
+          hitSomething = true;
+          hits++;
+          if (currentMode !== 'tracking') score += 10;
+
+          const proj = project(t.x, t.y, t.z);
+          if (proj) {
+            effects.push({
+              type:'impact', x:proj.x, y:proj.y,
+              life:1.0, maxLife:1.0,
+              radius: proj.scale * t.radius,
+              color:'#ff9060', z: proj.z
+            });
+          }
+
+          if (currentMode === 'flick') {
+            targets.splice(i, 1);
+            setTimeout(() => {
+              if (currentMode === 'flick' && targets.length < settings.flickCount) {
+                const p = randomWorldPos(14, 30);
+                targets.push(makeTarget(p.x, p.y, p.z, settings.flickSize, 'flick'));
+              }
+            }, settings.flickRespawn);
+          } else if (currentMode === 'gridshot') {
+            targets.splice(i, 1);
+            setTimeout(() => {
+              if (currentMode === 'gridshot' && targets.length < settings.gridCount) {
+                const p = randomWorldPos(16, 28);
+                targets.push(makeTarget(p.x, p.y, p.z, settings.gridSize, 'grid'));
+              }
+            }, settings.gridRespawn);
+          }
+          break;
+        }
+      }
+
+      if (!hitSomething) {
+        effects.push({
+          type:'miss', x:aimScreenX+rand(-6,6), y:aimScreenY+rand(-6,6),
+          life:0.7, maxLife:0.7, color:'#8a6a6a'
+        });
+      }
+
+      shotsFired++;
+      updateStatsUI();
+    }
+
+    function updateStatsUI() {
+      scoreSpan.textContent = Math.round(score);
+      if (currentMode === 'tracking') {
+        const acc = trackingTotalTicks === 0 ? 100 : Math.round((trackingHits / trackingTotalTicks) * 100);
+        accSpan.textContent = acc + '%';
+      } else {
+        const acc = shotsFired === 0 ? 100 : Math.round((hits / shotsFired) * 100);
+        accSpan.textContent = acc + '%';
+      }
+    }
+
+    let crosshairX = W / 2, crosshairY = H / 2;
+    let lastMouseX = null, lastMouseY = null;
+    let lastShotTime = 0;
+
+    function sensFactor() {
+      return settings.sensitivity / 3.0;
+    }
+
+    function getCanvasMouseRaw(e) {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      return {
+        x: (e.clientX - rect.left) * scaleX,
+        y: (e.clientY - rect.top) * scaleY
+      };
+    }
+
+    canvas.addEventListener('mousemove', (e) => {
+      const pos = getCanvasMouseRaw(e);
+      if (lastMouseX !== null) {
+        const dx = pos.x - lastMouseX;
+        const dy = pos.y - lastMouseY;
+        const sf = sensFactor();
+        crosshairX = clamp(crosshairX + dx * sf, 0, W);
+        crosshairY = clamp(crosshairY + dy * sf, 0, H);
+      } else {
+        crosshairX = pos.x;
+        crosshairY = pos.y;
+      }
+      lastMouseX = pos.x;
+      lastMouseY = pos.y;
+    });
+
+    canvas.addEventListener('mouseleave', () => {
+      lastMouseX = null;
+      lastMouseY = null;
+    });
+
+    canvas.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      const pos = getCanvasMouseRaw(e);
+      lastMouseX = pos.x;
+      lastMouseY = pos.y;
+
+      const now = performance.now();
+      if (now - lastShotTime < WEAPON.fireRate) return;
+      lastShotTime = now;
+
+      handleShot(crosshairX, crosshairY);
+    });
+
+    canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'r' || e.key === 'R' || e.key === 'к' || e.key === 'К') {
+        resetSession();
+      }
+    });
+
+    function resetSession() {
+      score = 0; shotsFired = 0; hits = 0;
+      trackingHits = 0; trackingTotalTicks = 0;
+      updateStatsUI();
+      resetTargets();
+    }
+
+    document.querySelectorAll('[data-mode]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-mode]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentMode = btn.dataset.mode;
+        resetSession();
+      });
+    });
+
+    const settingsPanel = document.getElementById('settingsPanel');
+    document.getElementById('settingsToggle').addEventListener('click', () => {
+      settingsPanel.classList.toggle('open');
+    });
+    document.getElementById('closeSettings').addEventListener('click', () => {
+      settingsPanel.classList.remove('open');
+    });
+
+    const sensSlider = document.getElementById('sensSlider');
+    const sensValue = document.getElementById('sensValue');
+    sensSlider.addEventListener('input', () => {
+      settings.sensitivity = parseFloat(sensSlider.value);
+      sensValue.textContent = settings.sensitivity.toFixed(2);
+      document.querySelectorAll('[data-sens]').forEach(b => {
+        b.classList.toggle('active', Math.abs(parseFloat(b.dataset.sens) - settings.sensitivity) < 0.01);
+      });
+    });
+    document.querySelectorAll('[data-sens]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        settings.sensitivity = parseFloat(btn.dataset.sens);
+        sensSlider.value = settings.sensitivity;
+        sensValue.textContent = settings.sensitivity.toFixed(2);
+        document.querySelectorAll('[data-sens]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+
+    const csSize = document.getElementById('crosshairSizeSlider');
+    const csSizeVal = document.getElementById('crosshairSizeValue');
+    csSize.addEventListener('input', () => {
+      settings.crosshairSize = parseInt(csSize.value);
+      csSizeVal.textContent = settings.crosshairSize;
+    });
+
+    const csGap = document.getElementById('crosshairGapSlider');
+    const csGapVal = document.getElementById('crosshairGapValue');
+    csGap.addEventListener('input', () => {
+      settings.crosshairGap = parseInt(csGap.value);
+      csGapVal.textContent = settings.crosshairGap;
+    });
+
+    const csThick = document.getElementById('crosshairThicknessSlider');
+    const csThickVal = document.getElementById('crosshairThicknessValue');
+    csThick.addEventListener('input', () => {
+      settings.crosshairThickness = parseFloat(csThick.value);
+      csThickVal.textContent = settings.crosshairThickness.toFixed(1);
+    });
+
+    document.querySelectorAll('[data-color]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        settings.crosshairColor = btn.dataset.color;
+        document.querySelectorAll('[data-color]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+
+    const flickCount = document.getElementById('flickCountSlider');
+    const flickCountVal = document.getElementById('flickCountValue');
+    flickCount.addEventListener('input', () => {
+      settings.flickCount = parseInt(flickCount.value);
+      flickCountVal.textContent = settings.flickCount;
+      if (currentMode === 'flick') {
+        while (targets.length > settings.flickCount) targets.pop();
+        while (targets.length < settings.flickCount) {
+          const p = randomWorldPos(14, 30);
+          targets.push(makeTarget(p.x, p.y, p.z, settings.flickSize, 'flick'));
+        }
+      }
+    });
+
+    const flickSize = document.getElementById('flickSizeSlider');
+    const flickSizeVal = document.getElementById('flickSizeValue');
+    flickSize.addEventListener('input', () => {
+      settings.flickSize = parseFloat(flickSize.value);
+      flickSizeVal.textContent = settings.flickSize.toFixed(2);
+      if (currentMode === 'flick') {
+        targets.forEach(t => { t.radius = settings.flickSize; });
+      }
+    });
+
+    const flickRespawn = document.getElementById('flickRespawnSlider');
+    const flickRespawnVal = document.getElementById('flickRespawnValue');
+    flickRespawn.addEventListener('input', () => {
+      settings.flickRespawn = parseInt(flickRespawn.value);
+      flickRespawnVal.textContent = settings.flickRespawn;
+    });
+
+    const trackSpeed = document.getElementById('trackSpeedSlider');
+    const trackSpeedVal = document.getElementById('trackSpeedValue');
+    trackSpeed.addEventListener('input', () => {
+      const oldSpeed = settings.trackSpeed;
+      settings.trackSpeed = parseFloat(trackSpeed.value);
+      trackSpeedVal.textContent = settings.trackSpeed.toFixed(1);
+      if (currentMode === 'tracking' && oldSpeed > 0) {
+        const ratio = settings.trackSpeed / oldSpeed;
+        targets.forEach(t => {
+          if (t.type === 'tracking') { t.vx *= ratio; t.vy *= ratio; }
+        });
+      }
+    });
+
+    const trackSize = document.getElementById('trackSizeSlider');
+    const trackSizeVal = document.getElementById('trackSizeValue');
+    trackSize.addEventListener('input', () => {
+      settings.trackSize = parseFloat(trackSize.value);
+      trackSizeVal.textContent = settings.trackSize.toFixed(2);
+      if (currentMode === 'tracking') {
+        targets.forEach(t => { if (t.type === 'tracking') t.radius = settings.trackSize; });
+      }
+    });
+
+    const trackScore = document.getElementById('trackScoreSlider');
+    const trackScoreVal = document.getElementById('trackScoreValue');
+    trackScore.addEventListener('input', () => {
+      settings.trackScore = parseInt(trackScore.value);
+      trackScoreVal.textContent = settings.trackScore;
+    });
+
+    const gridCount = document.getElementById('gridCountSlider');
+    const gridCountVal = document.getElementById('gridCountValue');
+    gridCount.addEventListener('input', () => {
+      settings.gridCount = parseInt(gridCount.value);
+      gridCountVal.textContent = settings.gridCount;
+      if (currentMode === 'gridshot') {
+        while (targets.length > settings.gridCount) targets.pop();
+        while (targets.length < settings.gridCount) {
+          const p = randomWorldPos(16, 28);
+          targets.push(makeTarget(p.x, p.y, p.z, settings.gridSize, 'grid'));
+        }
+      }
+    });
+
+    const gridSize = document.getElementById('gridSizeSlider');
+    const gridSizeVal = document.getElementById('gridSizeValue');
+    gridSize.addEventListener('input', () => {
+      settings.gridSize = parseFloat(gridSize.value);
+      gridSizeVal.textContent = settings.gridSize.toFixed(2);
+      if (currentMode === 'gridshot') {
+        targets.forEach(t => { if (t.type === 'grid') t.radius = settings.gridSize; });
+      }
+    });
+
+    const gridRespawn = document.getElementById('gridRespawnSlider');
+    const gridRespawnVal = document.getElementById('gridRespawnValue');
+    gridRespawn.addEventListener('input', () => {
+      settings.gridRespawn = parseInt(gridRespawn.value);
+      gridRespawnVal.textContent = settings.gridRespawn;
+    });
+
+    const recoilInt = document.getElementById('recoilIntensitySlider');
+    const recoilIntVal = document.getElementById('recoilIntensityValue');
+    recoilInt.addEventListener('input', () => {
+      settings.recoilIntensity = parseFloat(recoilInt.value);
+      recoilIntVal.textContent = settings.recoilIntensity.toFixed(1);
+    });
+
+    document.getElementById('resetSettingsBtn').addEventListener('click', () => {
+      Object.assign(settings, DEFAULTS);
+
+      sensSlider.value = settings.sensitivity; sensValue.textContent = settings.sensitivity.toFixed(2);
+      csSize.value = settings.crosshairSize; csSizeVal.textContent = settings.crosshairSize;
+      csGap.value = settings.crosshairGap; csGapVal.textContent = settings.crosshairGap;
+      csThick.value = settings.crosshairThickness; csThickVal.textContent = settings.crosshairThickness.toFixed(1);
+      flickCount.value = settings.flickCount; flickCountVal.textContent = settings.flickCount;
+      flickSize.value = settings.flickSize; flickSizeVal.textContent = settings.flickSize.toFixed(2);
+      flickRespawn.value = settings.flickRespawn; flickRespawnVal.textContent = settings.flickRespawn;
+      trackSpeed.value = settings.trackSpeed; trackSpeedVal.textContent = settings.trackSpeed.toFixed(1);
+      trackSize.value = settings.trackSize; trackSizeVal.textContent = settings.trackSize.toFixed(2);
+      trackScore.value = settings.trackScore; trackScoreVal.textContent = settings.trackScore;
+      gridCount.value = settings.gridCount; gridCountVal.textContent = settings.gridCount;
+      gridSize.value = settings.gridSize; gridSizeVal.textContent = settings.gridSize.toFixed(2);
+      gridRespawn.value = settings.gridRespawn; gridRespawnVal.textContent = settings.gridRespawn;
+      recoilInt.value = settings.recoilIntensity; recoilIntVal.textContent = settings.recoilIntensity.toFixed(1);
+
+      document.querySelectorAll('[data-sens]').forEach(b => b.classList.remove('active'));
+      document.querySelector('[data-sens="3.00"]').classList.add('active');
+      document.querySelectorAll('[data-color]').forEach(b => b.classList.remove('active'));
+      document.querySelector('[data-color="#d43535"]').classList.add('active');
+
+      resetSession();
+    });
+
+    function updateTargets(dt) {
+      if (currentMode === 'tracking') {
+        targets.forEach(t => {
+          t.x += t.vx * dt;
+          t.y += t.vy * dt;
+          const bx = 10, by = 6;
+          if (t.x < -bx) { t.x = -bx; t.vx *= -1; }
+          if (t.x > bx) { t.x = bx; t.vx *= -1; }
+          if (t.y < -by) { t.y = -by; t.vy *= -1; }
+          if (t.y > by) { t.y = by; t.vy *= -1; }
+        });
+      }
+    }
+
+    function updateEffects() {
+      for (let i = effects.length - 1; i >= 0; i--) {
+        effects[i].life -= 0.045;
+        if (effects[i].life <= 0) effects.splice(i, 1);
+      }
+    }
+
+    function updateTrackingScore(dt) {
+      if (currentMode !== 'tracking') {
+        trackingIndicator.classList.remove('active');
+        return;
+      }
+      trackingIndicator.classList.add('active');
+
+      const cx = crosshairX + crosshairKickX * 0.6;
+      const cy = crosshairY + crosshairKickY * 0.6;
+
+      let onTarget = false;
+      for (const t of targets) {
+        const proj = project(t.x, t.y, t.z);
+        if (!proj) continue;
+        const screenRadius = t.radius * proj.scale;
+        const d = Math.hypot(cx - proj.x, cy - proj.y);
+        if (d <= screenRadius) { onTarget = true; break; }
+      }
+
+      if (onTarget) {
+        if (!trackingOnTarget) trackingAccumTimer = 0;
+        trackingTime += dt;
+        trackingOnTarget = true;
+        trackingAccumTimer += dt;
+        trackingTotalTicks++;
+        const tickInterval = 1.0 / settings.trackScore;
+        while (trackingAccumTimer >= tickInterval) {
+          trackingAccumTimer -= tickInterval;
+          score += 1;
+          trackingHits++;
+        }
+      } else {
+        trackingOnTarget = false;
+        trackingAccumTimer = 0;
+        trackingTotalTicks++;
+      }
+
+      trackingValue.textContent = trackingTime.toFixed(1);
+      updateStatsUI();
+    }
+
+    function drawScene() {
+      const grad = ctx.createRadialGradient(W/2, H/2, 50, W/2, H/2, 900);
+      grad.addColorStop(0, '#141014');
+      grad.addColorStop(1, '#060406');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, W, H);
+
+      drawGridFloor();
+
+      const drawList = [];
+      targets.forEach(t => {
+        const proj = project(t.x, t.y, t.z);
+        if (proj) drawList.push({ proj, target: t, z: proj.z });
+      });
+      drawList.sort((a, b) => b.z - a.z);
+      drawList.forEach(item => drawTarget3D(item.target, item.proj));
+
+      effects.forEach(eff => {
+        if (eff.type === 'flash') drawFlash(eff);
+        else if (eff.type === 'impact') drawImpact(eff);
+        else if (eff.type === 'miss') drawMiss(eff);
+      });
+
+      drawCrosshair();
+
+      ctx.font = '600 13px "Oswald", sans-serif';
+      ctx.fillStyle = '#5a3030';
+      ctx.shadowBlur = 0;
+      ctx.fillText(WEAPON.name, 26, 36);
+    }
+
+    function drawGridFloor() {
+      const gridSize = 2.5;
+      const gridExtent = 14;
+      const floorY = -5;
+      ctx.strokeStyle = '#1a0e10';
+      ctx.lineWidth = 0.8;
+      for (let z = -gridExtent; z <= 40; z += gridSize) {
+        const p1 = project(-gridExtent*2, floorY, z);
+        const p2 = project(gridExtent*2, floorY, z);
+        if (p1 && p2) {
+          ctx.beginPath();
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.stroke();
+        }
+      }
+      for (let x = -gridExtent*2; x <= gridExtent*2; x += gridSize*2) {
+        const p1 = project(x, floorY, -gridExtent);
+        const p2 = project(x, floorY, 40);
+        if (p1 && p2) {
+          ctx.beginPath();
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.stroke();
+        }
+      }
+    }
+
+    function drawTarget3D(t, proj) {
+      const screenRadius = t.radius * proj.scale;
+      const alpha = clamp(1.0 - (proj.z - 10) / 80, 0.3, 1.0);
+
+      let highlighted = false;
+      if (currentMode === 'tracking' && trackingOnTarget) {
+        const cx = crosshairX + crosshairKickX * 0.6;
+        const cy = crosshairY + crosshairKickY * 0.6;
+        const d = Math.hypot(cx - proj.x, cy - proj.y);
+        if (d <= screenRadius) highlighted = true;
+      }
+
+      ctx.shadowColor = highlighted ? '#4aff9a' : '#d43535';
+      ctx.shadowBlur = 24 * alpha;
+      ctx.beginPath();
+      ctx.arc(proj.x, proj.y, screenRadius * 1.15, 0, Math.PI * 2);
+      ctx.fillStyle = highlighted ? `rgba(74, 255, 154, ${0.16 * alpha})` : `rgba(180, 40, 40, ${0.08 * alpha})`;
+      ctx.fill();
+      ctx.strokeStyle = highlighted ? `rgba(74, 255, 154, ${0.9 * alpha})` : `rgba(220, 80, 80, ${0.55 * alpha})`;
+      ctx.lineWidth = 2.2;
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(proj.x, proj.y, screenRadius, 0, Math.PI * 2);
+      ctx.fillStyle = highlighted ? `rgba(74, 255, 154, ${0.2 * alpha})` : `rgba(160, 40, 40, ${0.14 * alpha})`;
+      ctx.fill();
+      ctx.strokeStyle = highlighted ? `rgba(120, 255, 180, ${0.95 * alpha})` : `rgba(220, 70, 70, ${0.9 * alpha})`;
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(proj.x, proj.y, screenRadius * 0.55, 0, Math.PI * 2);
+      ctx.strokeStyle = highlighted ? `rgba(180, 255, 210, ${0.95 * alpha})` : `rgba(240, 120, 120, ${0.9 * alpha})`;
+      ctx.lineWidth = 1.8;
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(proj.x, proj.y, Math.max(2, screenRadius * 0.12), 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255, 220, 220, ${0.95 * alpha})`;
+      ctx.shadowBlur = 18 * alpha;
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(proj.x - screenRadius - 5, proj.y);
+      ctx.lineTo(proj.x - screenRadius + 4, proj.y);
+      ctx.moveTo(proj.x + screenRadius - 4, proj.y);
+      ctx.lineTo(proj.x + screenRadius + 5, proj.y);
+      ctx.moveTo(proj.x, proj.y - screenRadius - 5);
+      ctx.lineTo(proj.x, proj.y - screenRadius + 4);
+      ctx.moveTo(proj.x, proj.y + screenRadius - 4);
+      ctx.lineTo(proj.x, proj.y + screenRadius + 5);
+      ctx.strokeStyle = highlighted ? `rgba(180, 255, 210, ${0.9 * alpha})` : `rgba(240, 120, 120, ${0.85 * alpha})`;
+      ctx.lineWidth = 1.7;
+      ctx.stroke();
+
+      ctx.shadowBlur = 0;
+    }
+
+    function drawFlash(eff) {
+      const alpha = eff.life / eff.maxLife;
+      ctx.shadowBlur = 40;
+      ctx.shadowColor = eff.color;
+      ctx.beginPath();
+      ctx.arc(eff.x, eff.y, eff.size * (1.4 - alpha * 0.4), 0, Math.PI * 2);
+      ctx.fillStyle = eff.color + Math.floor(alpha * 200).toString(16).padStart(2, '0');
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(eff.x, eff.y, eff.size * 0.5 * alpha, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255, 240, 240, ${alpha * 0.9})`;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+
+    function drawImpact(eff) {
+      const alpha = eff.life / eff.maxLife;
+      const r = eff.radius * 1.3;
+      ctx.shadowBlur = 30;
+      ctx.shadowColor = '#ff6030';
+      ctx.beginPath();
+      ctx.arc(eff.x, eff.y, r * (1.4 - alpha * 0.4), 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(255, 100, 50, ${alpha * 0.9})`;
+      ctx.lineWidth = 3 + 3 * alpha;
+      ctx.stroke();
+      for (let i = 0; i < 7; i++) {
+        const angle = (i / 7) * Math.PI * 2 + Math.random() * 0.5;
+        const len = (10 + Math.random() * 22) * alpha;
+        ctx.beginPath();
+        ctx.moveTo(eff.x, eff.y);
+        ctx.lineTo(eff.x + Math.cos(angle) * len, eff.y + Math.sin(angle) * len);
+        ctx.strokeStyle = `rgba(255, 150, 100, ${alpha * 0.85})`;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+      ctx.beginPath();
+      ctx.arc(eff.x, eff.y, 6 * alpha, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255, 230, 220, ${alpha})`;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+
+    function drawMiss(eff) {
+      const alpha = eff.life / eff.maxLife;
+      ctx.shadowBlur = 12;
+      ctx.shadowColor = '#6a4040';
+      ctx.beginPath();
+      ctx.arc(eff.x, eff.y, 5 * (1 - alpha * 0.4), 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(120, 80, 80, ${alpha * 0.5})`;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+
+    function drawCrosshair() {
+      const cx = crosshairX + crosshairKickX * 0.6;
+      const cy = crosshairY + crosshairKickY * 0.6;
+
+      const gap = settings.crosshairGap
+                + Math.abs(recoilPitch) * 220
+                + Math.abs(recoilYaw) * 120
+                + Math.abs(crosshairKickY) * 0.15;
+      const size = settings.crosshairSize;
+
+      ctx.shadowBlur = 14;
+      ctx.shadowColor = settings.crosshairColor;
+      ctx.strokeStyle = settings.crosshairColor + 'ee';
+      ctx.lineWidth = settings.crosshairThickness;
+
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - gap);
+      ctx.lineTo(cx, cy - gap - size);
+      ctx.moveTo(cx, cy + gap);
+      ctx.lineTo(cx, cy + gap + size);
+      ctx.moveTo(cx - gap, cy);
+      ctx.lineTo(cx - gap - size, cy);
+      ctx.moveTo(cx + gap, cy);
+      ctx.lineTo(cx + gap + size, cy);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, 2.2, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.shadowBlur = 16;
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, gap + size + 4, 0, Math.PI * 2);
+      ctx.strokeStyle = settings.crosshairColor + '44';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      ctx.shadowBlur = 0;
+    }
+
+    let lastFrameTime = performance.now();
+
+    function gameLoop(now) {
+      now = now || performance.now();
+      let dt = (now - lastFrameTime) / 1000;
+      if (dt > 0.1) dt = 0.1;
+      lastFrameTime = now;
+
+      updateRecoil();
+      updateTargets(dt);
+      updateEffects();
+      updateTrackingScore(dt);
+
+      drawScene();
+
+      requestAnimationFrame(gameLoop);
+    }
+
+    applyTranslations();
+    resetTargets();
+    updateStatsUI();
+    requestAnimationFrame(gameLoop);
+
+  })();
+</script>
+</body>
+</html>
