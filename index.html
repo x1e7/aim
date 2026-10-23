@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>2D AIM</title>
+  <title>AIM RANGE // TACTICAL TRAINER</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Oswald:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -97,9 +97,9 @@
       gap: 14px;
     }
     .lang-btn {
-      background: linear-gradient(180deg, #1c1414, #140c0c);
-      border: 1px solid #4a2020;
-      color: #c8a8a8;
+      background: linear-gradient(180deg, #0f1c2a, #0a1420);
+      border: 1px solid #1e3a52;
+      color: #7ab4d8;
       font-family: 'Oswald', sans-serif;
       font-weight: 600;
       font-size: 11px;
@@ -115,15 +115,15 @@
       gap: 8px;
     }
     .lang-btn:hover {
-      background: linear-gradient(180deg, #2a1818, #1c1010);
-      border-color: #7a3030;
-      color: #e8e2dc;
-      box-shadow: 0 0 14px rgba(200, 40, 40, 0.2);
+      background: linear-gradient(180deg, #16283a, #0e1c2a);
+      border-color: #2e5a7a;
+      color: #a8d4f0;
+      box-shadow: 0 0 14px rgba(60, 140, 200, 0.25);
     }
     .lang-btn .lang-flag {
       font-family: 'JetBrains Mono', monospace;
       font-weight: 700;
-      color: #d43535;
+      color: #4aa8e0;
       font-size: 12px;
     }
     .stats {
@@ -332,7 +332,7 @@
       border-left: 1px solid #4a1c1c;
       border-radius: 0 20px 20px 0;
       padding: 22px 20px;
-      transform: translateX(100%);
+      transform: translateX(105%);
       transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
       z-index: 100;
       box-shadow: -16px 0 50px rgba(0, 0, 0, 0.85), 0 0 40px rgba(160, 20, 20, 0.06) inset;
@@ -340,12 +340,18 @@
       flex-direction: column;
       gap: 16px;
       overflow-y: auto;
+      pointer-events: none;
+      visibility: hidden;
     }
     .settings-panel::-webkit-scrollbar { width: 6px; }
     .settings-panel::-webkit-scrollbar-track { background: #0a0808; }
     .settings-panel::-webkit-scrollbar-thumb { background: #3a1c1c; border-radius: 3px; }
     .settings-panel::-webkit-scrollbar-thumb:hover { background: #5a2828; }
-    .settings-panel.open { transform: translateX(0); }
+    .settings-panel.open {
+      transform: translateX(0);
+      pointer-events: auto;
+      visibility: visible;
+    }
 
     .settings-title {
       font-family: 'Russo One', sans-serif;
@@ -507,212 +513,156 @@
 <div class="app-container">
   <div class="header">
     <div class="logo-area">
-      <div class="logo" data-i18n="logo">СТРЕЛЬБИЩЕ <span class="accent">// 2D</span></div>
-      <div class="badge" data-i18n="badge">ТАКТИЧЕСКИЙ ТРЕНАЖЁР</div>
+      <div class="logo" data-i18n="logo">AIM RANGE <span class="accent">//</span></div>
+      <div class="badge" data-i18n="badge">TACTICAL TRAINER</div>
     </div>
     <div class="header-right">
-      <button class="lang-btn" id="langToggle"><span class="lang-flag" id="langFlag">RU</span><span id="langLabel">ЯЗЫК</span></button>
+      <button class="lang-btn" id="langToggle"><span class="lang-flag" id="langFlag">EN</span><span id="langLabel">LANG</span></button>
       <div class="stats">
-        <div class="stat-item"><span data-i18n="scoreLabel">ОЧКИ</span><span id="scoreDisplay">0</span></div>
-        <div class="stat-item"><span data-i18n="accuracyLabel">ТОЧН.</span><span id="accuracyDisplay">100%</span></div>
+        <div class="stat-item"><span data-i18n="scoreLabel">SCORE</span><span id="scoreDisplay">0</span></div>
+        <div class="stat-item"><span data-i18n="accuracyLabel">ACC</span><span id="accuracyDisplay">100%</span></div>
       </div>
     </div>
   </div>
 
   <div class="controls">
     <div class="mode-group">
-      <span class="label" data-i18n="modeLabel">РЕЖИМ</span>
-      <button class="btn active" data-mode="flick" data-i18n="modeFlick">ФЛИК</button>
-      <button class="btn" data-mode="tracking" data-i18n="modeTracking">ТРЕКИНГ</button>
-      <button class="btn" data-mode="gridshot" data-i18n="modeGrid">СЕТКА</button>
+      <span class="label" data-i18n="modeLabel">MODE</span>
+      <button class="btn active" data-mode="flick" data-i18n="modeFlick">FLICK</button>
+      <button class="btn" data-mode="tracking" data-i18n="modeTracking">TRACKING</button>
+      <button class="btn" data-mode="gridshot" data-i18n="modeGrid">GRID</button>
     </div>
-    <button class="btn settings-btn" id="settingsToggle" data-i18n="settingsBtn">НАСТРОЙКИ</button>
+    <button class="btn settings-btn" id="settingsToggle" data-i18n="settingsBtn">SETTINGS</button>
   </div>
 
   <div class="canvas-wrapper">
     <canvas id="gameCanvas" width="1280" height="720"></canvas>
-    <div class="mode-tag" id="modeTag" data-i18n="modeTagFlick">ФЛИК</div>
-    <div class="tracking-indicator" id="trackingIndicator"><span data-i18n="trackingLabel">УДЕРЖАНИЕ</span> <span id="trackingValue">0.0</span>с</div>
-    <div class="overlay-label" id="recoilIndicator" data-i18n="recoilLow">ОТДАЧА: НИЗКАЯ</div>
-    <div class="overlay-right" data-i18n="resetHint">R / СБРОС</div>
+    <div class="mode-tag" id="modeTag" data-i18n="modeTagFlick">FLICK</div>
+    <div class="tracking-indicator" id="trackingIndicator"><span data-i18n="trackingLabel">TRACKING</span> <span id="trackingValue">0.0</span>s</div>
+    <div class="overlay-label" id="recoilIndicator" data-i18n="recoilLow">RECOIL: LOW</div>
+    <div class="overlay-right" data-i18n="resetHint">R / RESET</div>
   </div>
 
   <div class="settings-panel" id="settingsPanel">
     <div class="settings-title">
-      <span data-i18n="settingsTitle">НАСТРОЙКИ</span>
+      <span data-i18n="settingsTitle">SETTINGS</span>
       <button class="close-settings" id="closeSettings">×</button>
     </div>
 
-    <div class="settings-section" data-i18n="sectionGeneral">ОБЩИЕ</div>
+    <div class="settings-section" data-i18n="sectionGeneral">GENERAL</div>
 
     <div class="setting-row">
-      <label><span data-i18n="sensitivity">ЧУВСТВИТЕЛЬНОСТЬ</span> <span id="sensValue">3.00</span></label>
+      <label><span data-i18n="sensitivity">SENSITIVITY</span> <span id="sensValue">3.00</span></label>
       <input type="range" id="sensSlider" min="0.10" max="10.00" step="0.05" value="3.00">
     </div>
     <div class="presets">
-      <button class="btn" data-sens="0.80" data-i18n="sensLow">НИЗКАЯ</button>
-      <button class="btn" data-sens="2.00" data-i18n="sensMid">СРЕДНЯЯ</button>
-      <button class="btn active" data-sens="3.00" data-i18n="sensDefault">СТАНДАРТ</button>
-      <button class="btn" data-sens="5.00" data-i18n="sensHigh">ВЫСОКАЯ</button>
-      <button class="btn" data-sens="8.00" data-i18n="sensVeryHigh">ОЧ.ВЫС.</button>
+      <button class="btn" data-sens="0.80" data-i18n="sensLow">LOW</button>
+      <button class="btn" data-sens="2.00" data-i18n="sensMid">MID</button>
+      <button class="btn active" data-sens="3.00" data-i18n="sensDefault">DEFAULT</button>
+      <button class="btn" data-sens="5.00" data-i18n="sensHigh">HIGH</button>
+      <button class="btn" data-sens="8.00" data-i18n="sensVeryHigh">V.HIGH</button>
     </div>
 
     <div class="setting-divider"></div>
 
-    <div class="settings-section" data-i18n="sectionCrosshair">ПРИЦЕЛ</div>
+    <div class="settings-section" data-i18n="sectionCrosshair">CROSSHAIR</div>
 
     <div class="setting-row">
-      <label><span data-i18n="crosshairSize">РАЗМЕР</span> <span id="crosshairSizeValue">12</span></label>
+      <label><span data-i18n="crosshairSize">SIZE</span> <span id="crosshairSizeValue">12</span></label>
       <input type="range" id="crosshairSizeSlider" min="4" max="30" step="1" value="12">
     </div>
     <div class="setting-row">
-      <label><span data-i18n="crosshairGap">РАЗРЫВ</span> <span id="crosshairGapValue">6</span></label>
+      <label><span data-i18n="crosshairGap">GAP</span> <span id="crosshairGapValue">6</span></label>
       <input type="range" id="crosshairGapSlider" min="0" max="20" step="1" value="6">
     </div>
     <div class="setting-row">
-      <label><span data-i18n="crosshairThickness">ТОЛЩИНА</span> <span id="crosshairThicknessValue">2.2</span></label>
+      <label><span data-i18n="crosshairThickness">THICKNESS</span> <span id="crosshairThicknessValue">2.2</span></label>
       <input type="range" id="crosshairThicknessSlider" min="1" max="6" step="0.1" value="2.2">
     </div>
     <div class="setting-row">
-      <label data-i18n="crosshairColor">ЦВЕТ</label>
+      <label data-i18n="crosshairColor">COLOR</label>
       <div class="presets" id="colorPresets">
-        <button class="btn active" data-color="#d43535" data-i18n="colorRed">КРАСНЫЙ</button>
-        <button class="btn" data-color="#e8e2dc" data-i18n="colorWhite">БЕЛЫЙ</button>
-        <button class="btn" data-color="#e6b85c" data-i18n="colorGold">ЗОЛОТО</button>
-        <button class="btn" data-color="#4ade80" data-i18n="colorGreen">ЗЕЛЁНЫЙ</button>
-        <button class="btn" data-color="#2Db4e6" data-i18n="colorBlue">СИНИЙ</button>
+        <button class="btn active" data-color="#d43535" data-i18n="colorRed">RED</button>
+        <button class="btn" data-color="#e8e2dc" data-i18n="colorWhite">WHITE</button>
+        <button class="btn" data-color="#e6b85c" data-i18n="colorGold">GOLD</button>
+        <button class="btn" data-color="#4ade80" data-i18n="colorGreen">GREEN</button>
+        <button class="btn" data-color="#3db4e6" data-i18n="colorBlue">BLUE</button>
       </div>
     </div>
 
     <div class="setting-divider"></div>
 
-    <div class="settings-section" data-i18n="sectionFlick">РЕЖИМ «ФЛИК»</div>
+    <div class="settings-section" data-i18n="sectionFlick">FLICK MODE</div>
 
     <div class="setting-row">
-      <label><span data-i18n="flickCount">КОЛ-ВО ЦЕЛЕЙ</span> <span id="flickCountValue">1</span></label>
+      <label><span data-i18n="flickCount">TARGET COUNT</span> <span id="flickCountValue">1</span></label>
       <input type="range" id="flickCountSlider" min="1" max="5" step="1" value="1">
     </div>
     <div class="setting-row">
-      <label><span data-i18n="flickSize">РАЗМЕР ЦЕЛИ</span> <span id="flickSizeValue">1.15</span></label>
+      <label><span data-i18n="flickSize">TARGET SIZE</span> <span id="flickSizeValue">1.15</span></label>
       <input type="range" id="flickSizeSlider" min="0.5" max="2.5" step="0.05" value="1.15">
     </div>
     <div class="setting-row">
-      <label><span data-i18n="flickRespawn">ЗАДЕРЖКА</span> <span id="flickRespawnValue">70</span> <span data-i18n="msUnit">мс</span></label>
+      <label><span data-i18n="flickRespawn">RESPAWN DELAY</span> <span id="flickRespawnValue">70</span> <span data-i18n="msUnit">ms</span></label>
       <input type="range" id="flickRespawnSlider" min="0" max="500" step="10" value="70">
     </div>
 
     <div class="setting-divider"></div>
 
-    <div class="settings-section" data-i18n="sectionTracking">РЕЖИМ «ТРЕКИНГ»</div>
+    <div class="settings-section" data-i18n="sectionTracking">TRACKING MODE</div>
 
     <div class="setting-row">
-      <label><span data-i18n="trackSpeed">СКОРОСТЬ</span> <span id="trackSpeedValue">1.0</span>×</label>
+      <label><span data-i18n="trackSpeed">SPEED</span> <span id="trackSpeedValue">1.0</span>×</label>
       <input type="range" id="trackSpeedSlider" min="0.3" max="3.0" step="0.1" value="1.0">
     </div>
     <div class="setting-row">
-      <label><span data-i18n="trackSize">РАЗМЕР ЦЕЛИ</span> <span id="trackSizeValue">1.15</span></label>
+      <label><span data-i18n="trackSize">TARGET SIZE</span> <span id="trackSizeValue">1.15</span></label>
       <input type="range" id="trackSizeSlider" min="0.5" max="2.5" step="0.05" value="1.15">
     </div>
     <div class="setting-row">
-      <label><span data-i18n="trackScore">ОЧКИ/СЕК</span> <span id="trackScoreValue">10</span></label>
+      <label><span data-i18n="trackScore">SCORE/SEC</span> <span id="trackScoreValue">10</span></label>
       <input type="range" id="trackScoreSlider" min="1" max="30" step="1" value="10">
     </div>
 
     <div class="setting-divider"></div>
 
-    <div class="settings-section" data-i18n="sectionGrid">РЕЖИМ «СЕТКА»</div>
+    <div class="settings-section" data-i18n="sectionGrid">GRID SHOT MODE</div>
 
     <div class="setting-row">
-      <label><span data-i18n="gridCount">КОЛ-ВО ЦЕЛЕЙ</span> <span id="gridCountValue">3</span></label>
+      <label><span data-i18n="gridCount">TARGET COUNT</span> <span id="gridCountValue">3</span></label>
       <input type="range" id="gridCountSlider" min="1" max="8" step="1" value="3">
     </div>
     <div class="setting-row">
-      <label><span data-i18n="gridSize">РАЗМЕР ЦЕЛИ</span> <span id="gridSizeValue">1.15</span></label>
+      <label><span data-i18n="gridSize">TARGET SIZE</span> <span id="gridSizeValue">1.15</span></label>
       <input type="range" id="gridSizeSlider" min="0.5" max="2.5" step="0.05" value="1.15">
     </div>
     <div class="setting-row">
-      <label><span data-i18n="gridRespawn">ЗАДЕРЖКА</span> <span id="gridRespawnValue">100</span> <span data-i18n="msUnit">мс</span></label>
+      <label><span data-i18n="gridRespawn">RESPAWN DELAY</span> <span id="gridRespawnValue">100</span> <span data-i18n="msUnit">ms</span></label>
       <input type="range" id="gridRespawnSlider" min="0" max="500" step="10" value="100">
     </div>
 
     <div class="setting-divider"></div>
 
-    <div class="settings-section" data-i18n="sectionRecoil">ОТДАЧА</div>
+    <div class="settings-section" data-i18n="sectionRecoil">RECOIL</div>
 
     <div class="setting-row">
-      <label><span data-i18n="recoilIntensity">ИНТЕНСИВНОСТЬ</span> <span id="recoilIntensityValue">1.0</span>×</label>
+      <label><span data-i18n="recoilIntensity">INTENSITY</span> <span id="recoilIntensityValue">1.0</span>×</label>
       <input type="range" id="recoilIntensitySlider" min="0.0" max="2.5" step="0.1" value="1.0">
     </div>
 
     <div class="settings-note" data-i18n="settingsNote">
-      ЧУВСТВИТЕЛЬНОСТЬ управляет скоростью движения прицела за мышью. Настройки режимов применяются мгновенно и сбрасывают текущую сессию.
+      SENSITIVITY controls crosshair movement speed per mouse movement. Mode settings apply instantly and reset the current session.
     </div>
 
-    <button class="btn reset-settings-btn" id="resetSettingsBtn" data-i18n="resetSettings">СБРОСИТЬ НАСТРОЙКИ</button>
+    <button class="btn reset-settings-btn" id="resetSettingsBtn" data-i18n="resetSettings">RESET SETTINGS</button>
   </div>
 </div>
 
 <script>
   (function(){
     const translations = {
-      ru: {
-        logo: 'СТРЕЛЬБИЩЕ <span class="accent">// 2D</span>',
-        badge: 'ТАКТИЧЕСКИЙ ТРЕНАЖЁР',
-        scoreLabel: 'ОЧКИ',
-        accuracyLabel: 'ТОЧН.',
-        modeLabel: 'РЕЖИМ',
-        modeFlick: 'ФЛИК',
-        modeTracking: 'ТРЕКИНГ',
-        modeGrid: 'СЕТКА',
-        settingsBtn: 'НАСТРОЙКИ',
-        modeTagFlick: 'ФЛИК',
-        modeTagTracking: 'ТРЕКИНГ',
-        modeTagGrid: 'СЕТКА',
-        trackingLabel: 'УДЕРЖАНИЕ',
-        recoilLow: 'ОТДАЧА: НИЗКАЯ',
-        recoilMedium: 'ОТДАЧА: СРЕДНЯЯ',
-        recoilHigh: 'ОТДАЧА: ВЫСОКАЯ',
-        resetHint: 'R / СБРОС',
-        settingsTitle: 'НАСТРОЙКИ',
-        sectionGeneral: 'ОБЩИЕ',
-        sensitivity: 'ЧУВСТВИТЕЛЬНОСТЬ',
-        sensLow: 'НИЗКАЯ',
-        sensMid: 'СРЕДНЯЯ',
-        sensDefault: 'СТАНДАРТ',
-        sensHigh: 'ВЫСОКАЯ',
-        sensVeryHigh: 'ОЧ.ВЫС.',
-        sectionCrosshair: 'ПРИЦЕЛ',
-        crosshairSize: 'РАЗМЕР',
-        crosshairGap: 'РАЗРЫВ',
-        crosshairThickness: 'ТОЛЩИНА',
-        crosshairColor: 'ЦВЕТ',
-        colorRed: 'КРАСНЫЙ',
-        colorWhite: 'БЕЛЫЙ',
-        colorGold: 'ЗОЛОТО',
-        colorGreen: 'ЗЕЛЁНЫЙ',
-        colorBlue: 'СИНИЙ',
-        sectionFlick: 'РЕЖИМ «ФЛИК»',
-        flickCount: 'КОЛ-ВО ЦЕЛЕЙ',
-        flickSize: 'РАЗМЕР ЦЕЛИ',
-        flickRespawn: 'ЗАДЕРЖКА',
-        msUnit: 'мс',
-        sectionTracking: 'РЕЖИМ «ТРЕКИНГ»',
-        trackSpeed: 'СКОРОСТЬ',
-        trackSize: 'РАЗМЕР ЦЕЛИ',
-        trackScore: 'ОЧКИ/СЕК',
-        sectionGrid: 'РЕЖИМ «СЕТКА»',
-        gridCount: 'КОЛ-ВО ЦЕЛЕЙ',
-        gridSize: 'РАЗМЕР ЦЕЛИ',
-        gridRespawn: 'ЗАДЕРЖКА',
-        sectionRecoil: 'ОТДАЧА',
-        recoilIntensity: 'ИНТЕНСИВНОСТЬ',
-        settingsNote: 'ЧУВСТВИТЕЛЬНОСТЬ управляет скоростью движения прицела за мышью. Настройки режимов применяются мгновенно и сбрасывают текущую сессию.',
-        resetSettings: 'СБРОСИТЬ НАСТРОЙКИ',
-        langLabel: 'ЯЗЫК',
-        langCode: 'RU'
-      },
       en: {
-        logo: 'AIM RANGE <span class="accent">// 2D</span>',
+        logo: 'AIM RANGE <span class="accent">//</span>',
         badge: 'TACTICAL TRAINER',
         scoreLabel: 'SCORE',
         accuracyLabel: 'ACC',
@@ -766,11 +716,80 @@
         resetSettings: 'RESET SETTINGS',
         langLabel: 'LANG',
         langCode: 'EN'
+      },
+      ru: {
+        logo: 'СТРЕЛЬБИЩЕ <span class="accent">//</span>',
+        badge: 'ТАКТИЧЕСКИЙ ТРЕНАЖЁР',
+        scoreLabel: 'ОЧКИ',
+        accuracyLabel: 'ТОЧН.',
+        modeLabel: 'РЕЖИМ',
+        modeFlick: 'ФЛИК',
+        modeTracking: 'ТРЕКИНГ',
+        modeGrid: 'СЕТКА',
+        settingsBtn: 'НАСТРОЙКИ',
+        modeTagFlick: 'ФЛИК',
+        modeTagTracking: 'ТРЕКИНГ',
+        modeTagGrid: 'СЕТКА',
+        trackingLabel: 'УДЕРЖАНИЕ',
+        recoilLow: 'ОТДАЧА: НИЗКАЯ',
+        recoilMedium: 'ОТДАЧА: СРЕДНЯЯ',
+        recoilHigh: 'ОТДАЧА: ВЫСОКАЯ',
+        resetHint: 'R / СБРОС',
+        settingsTitle: 'НАСТРОЙКИ',
+        sectionGeneral: 'ОБЩИЕ',
+        sensitivity: 'ЧУВСТВИТЕЛЬНОСТЬ',
+        sensLow: 'НИЗКАЯ',
+        sensMid: 'СРЕДНЯЯ',
+        sensDefault: 'СТАНДАРТ',
+        sensHigh: 'ВЫСОКАЯ',
+        sensVeryHigh: 'ОЧ.ВЫС.',
+        sectionCrosshair: 'ПРИЦЕЛ',
+        crosshairSize: 'РАЗМЕР',
+        crosshairGap: 'РАЗРЫВ',
+        crosshairThickness: 'ТОЛЩИНА',
+        crosshairColor: 'ЦВЕТ',
+        colorRed: 'КРАСНЫЙ',
+        colorWhite: 'БЕЛЫЙ',
+        colorGold: 'ЗОЛОТО',
+        colorGreen: 'ЗЕЛЁНЫЙ',
+        colorBlue: 'СИНИЙ',
+        sectionFlick: 'РЕЖИМ «ФЛИК»',
+        flickCount: 'КОЛ-ВО ЦЕЛЕЙ',
+        flickSize: 'РАЗМЕР ЦЕЛИ',
+        flickRespawn: 'ЗАДЕРЖКА',
+        msUnit: 'мс',
+        sectionTracking: 'РЕЖИМ «ТРЕКИНГ»',
+        trackSpeed: 'СКОРОСТЬ',
+        trackSize: 'РАЗМЕР ЦЕЛИ',
+        trackScore: 'ОЧКИ/СЕК',
+        sectionGrid: 'РЕЖИМ «СЕТКА»',
+        gridCount: 'КОЛ-ВО ЦЕЛЕЙ',
+        gridSize: 'РАЗМЕР ЦЕЛИ',
+        gridRespawn: 'ЗАДЕРЖКА',
+        sectionRecoil: 'ОТДАЧА',
+        recoilIntensity: 'ИНТЕНСИВНОСТЬ',
+        settingsNote: 'ЧУВСТВИТЕЛЬНОСТЬ управляет скоростью движения прицела за мышью. Настройки режимов применяются мгновенно и сбрасывают текущую сессию.',
+        resetSettings: 'СБРОСИТЬ НАСТРОЙКИ',
+        langLabel: 'ЯЗЫК',
+        langCode: 'RU'
       }
     };
 
-    let currentLang = localStorage.getItem('aimTrainerLang') || 'ru';
-    if (!translations[currentLang]) currentLang = 'ru';
+    function loadSettings() {
+      try {
+        const raw = localStorage.getItem('aimTrainerSettings');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') return parsed;
+        }
+      } catch (e) {}
+      return null;
+    }
+
+    let storedSettings = loadSettings();
+
+    let currentLang = localStorage.getItem('aimTrainerLang') || 'en';
+    if (!translations[currentLang]) currentLang = 'en';
 
     function applyTranslations() {
       const t = translations[currentLang];
@@ -785,8 +804,8 @@
       document.getElementById('langLabel').textContent = t.langLabel;
       document.documentElement.lang = currentLang;
       document.title = currentLang === 'ru'
-        ? 'СТРЕЛЬБИЩЕ // 2D ТАКТИЧЕСКИЙ ТРЕНАЖЁР'
-        : 'AIM RANGE // 2D TACTICAL TRAINER';
+        ? 'СТРЕЛЬБИЩЕ // ТАКТИЧЕСКИЙ ТРЕНАЖЁР'
+        : 'AIM RANGE // TACTICAL TRAINER';
       updateModeTag();
       updateRecoilIndicator();
     }
@@ -831,7 +850,13 @@
       gridRespawn: 100,
       recoilIntensity: 1.0
     };
-    const settings = { ...DEFAULTS };
+    const settings = Object.assign({}, DEFAULTS, storedSettings || {});
+
+    function saveSettings() {
+      try {
+        localStorage.setItem('aimTrainerSettings', JSON.stringify(settings));
+      } catch (e) {}
+    }
 
     let targets = [];
     let effects = [];
@@ -1177,6 +1202,7 @@
       document.querySelectorAll('[data-sens]').forEach(b => {
         b.classList.toggle('active', Math.abs(parseFloat(b.dataset.sens) - settings.sensitivity) < 0.01);
       });
+      saveSettings();
     });
     document.querySelectorAll('[data-sens]').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -1185,6 +1211,7 @@
         sensValue.textContent = settings.sensitivity.toFixed(2);
         document.querySelectorAll('[data-sens]').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
+        saveSettings();
       });
     });
 
@@ -1193,6 +1220,7 @@
     csSize.addEventListener('input', () => {
       settings.crosshairSize = parseInt(csSize.value);
       csSizeVal.textContent = settings.crosshairSize;
+      saveSettings();
     });
 
     const csGap = document.getElementById('crosshairGapSlider');
@@ -1200,6 +1228,7 @@
     csGap.addEventListener('input', () => {
       settings.crosshairGap = parseInt(csGap.value);
       csGapVal.textContent = settings.crosshairGap;
+      saveSettings();
     });
 
     const csThick = document.getElementById('crosshairThicknessSlider');
@@ -1207,6 +1236,7 @@
     csThick.addEventListener('input', () => {
       settings.crosshairThickness = parseFloat(csThick.value);
       csThickVal.textContent = settings.crosshairThickness.toFixed(1);
+      saveSettings();
     });
 
     document.querySelectorAll('[data-color]').forEach(btn => {
@@ -1214,6 +1244,7 @@
         settings.crosshairColor = btn.dataset.color;
         document.querySelectorAll('[data-color]').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
+        saveSettings();
       });
     });
 
@@ -1229,6 +1260,7 @@
           targets.push(makeTarget(p.x, p.y, p.z, settings.flickSize, 'flick'));
         }
       }
+      saveSettings();
     });
 
     const flickSize = document.getElementById('flickSizeSlider');
@@ -1239,6 +1271,7 @@
       if (currentMode === 'flick') {
         targets.forEach(t => { t.radius = settings.flickSize; });
       }
+      saveSettings();
     });
 
     const flickRespawn = document.getElementById('flickRespawnSlider');
@@ -1246,6 +1279,7 @@
     flickRespawn.addEventListener('input', () => {
       settings.flickRespawn = parseInt(flickRespawn.value);
       flickRespawnVal.textContent = settings.flickRespawn;
+      saveSettings();
     });
 
     const trackSpeed = document.getElementById('trackSpeedSlider');
@@ -1260,6 +1294,7 @@
           if (t.type === 'tracking') { t.vx *= ratio; t.vy *= ratio; }
         });
       }
+      saveSettings();
     });
 
     const trackSize = document.getElementById('trackSizeSlider');
@@ -1270,6 +1305,7 @@
       if (currentMode === 'tracking') {
         targets.forEach(t => { if (t.type === 'tracking') t.radius = settings.trackSize; });
       }
+      saveSettings();
     });
 
     const trackScore = document.getElementById('trackScoreSlider');
@@ -1277,6 +1313,7 @@
     trackScore.addEventListener('input', () => {
       settings.trackScore = parseInt(trackScore.value);
       trackScoreVal.textContent = settings.trackScore;
+      saveSettings();
     });
 
     const gridCount = document.getElementById('gridCountSlider');
@@ -1291,6 +1328,7 @@
           targets.push(makeTarget(p.x, p.y, p.z, settings.gridSize, 'grid'));
         }
       }
+      saveSettings();
     });
 
     const gridSize = document.getElementById('gridSizeSlider');
@@ -1301,6 +1339,7 @@
       if (currentMode === 'gridshot') {
         targets.forEach(t => { if (t.type === 'grid') t.radius = settings.gridSize; });
       }
+      saveSettings();
     });
 
     const gridRespawn = document.getElementById('gridRespawnSlider');
@@ -1308,6 +1347,7 @@
     gridRespawn.addEventListener('input', () => {
       settings.gridRespawn = parseInt(gridRespawn.value);
       gridRespawnVal.textContent = settings.gridRespawn;
+      saveSettings();
     });
 
     const recoilInt = document.getElementById('recoilIntensitySlider');
@@ -1315,11 +1355,10 @@
     recoilInt.addEventListener('input', () => {
       settings.recoilIntensity = parseFloat(recoilInt.value);
       recoilIntVal.textContent = settings.recoilIntensity.toFixed(1);
+      saveSettings();
     });
 
-    document.getElementById('resetSettingsBtn').addEventListener('click', () => {
-      Object.assign(settings, DEFAULTS);
-
+    function syncSettingsUI() {
       sensSlider.value = settings.sensitivity; sensValue.textContent = settings.sensitivity.toFixed(2);
       csSize.value = settings.crosshairSize; csSizeVal.textContent = settings.crosshairSize;
       csGap.value = settings.crosshairGap; csGapVal.textContent = settings.crosshairGap;
@@ -1335,11 +1374,18 @@
       gridRespawn.value = settings.gridRespawn; gridRespawnVal.textContent = settings.gridRespawn;
       recoilInt.value = settings.recoilIntensity; recoilIntVal.textContent = settings.recoilIntensity.toFixed(1);
 
-      document.querySelectorAll('[data-sens]').forEach(b => b.classList.remove('active'));
-      document.querySelector('[data-sens="3.00"]').classList.add('active');
-      document.querySelectorAll('[data-color]').forEach(b => b.classList.remove('active'));
-      document.querySelector('[data-color="#d43535"]').classList.add('active');
+      document.querySelectorAll('[data-sens]').forEach(b => {
+        b.classList.toggle('active', Math.abs(parseFloat(b.dataset.sens) - settings.sensitivity) < 0.01);
+      });
+      document.querySelectorAll('[data-color]').forEach(b => {
+        b.classList.toggle('active', b.dataset.color === settings.crosshairColor);
+      });
+    }
 
+    document.getElementById('resetSettingsBtn').addEventListener('click', () => {
+      Object.assign(settings, DEFAULTS);
+      saveSettings();
+      syncSettingsUI();
       resetSession();
     });
 
@@ -1420,7 +1466,7 @@
         if (proj) drawList.push({ proj, target: t, z: proj.z });
       });
       drawList.sort((a, b) => b.z - a.z);
-      drawList.forEach(item => drawTarget2D(item.target, item.proj));
+      drawList.forEach(item => drawTarget3D(item.target, item.proj));
 
       effects.forEach(eff => {
         if (eff.type === 'flash') drawFlash(eff);
@@ -1464,7 +1510,7 @@
       }
     }
 
-    function drawTarget2D(t, proj) {
+    function drawTarget3D(t, proj) {
       const screenRadius = t.radius * proj.scale;
       const alpha = clamp(1.0 - (proj.z - 10) / 80, 0.3, 1.0);
 
@@ -1634,6 +1680,7 @@
       requestAnimationFrame(gameLoop);
     }
 
+    syncSettingsUI();
     applyTranslations();
     resetTargets();
     updateStatsUI();
