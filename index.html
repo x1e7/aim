@@ -507,7 +507,7 @@
 <div class="app-container">
   <div class="header">
     <div class="logo-area">
-      <div class="logo" data-i18n="logo">СТРЕЛЬБИЩЕ <span class="accent">// 3D</span></div>
+      <div class="logo" data-i18n="logo">СТРЕЛЬБИЩЕ <span class="accent">// 2D</span></div>
       <div class="badge" data-i18n="badge">ТАКТИЧЕСКИЙ ТРЕНАЖЁР</div>
     </div>
     <div class="header-right">
@@ -580,7 +580,7 @@
         <button class="btn" data-color="#e8e2dc" data-i18n="colorWhite">БЕЛЫЙ</button>
         <button class="btn" data-color="#e6b85c" data-i18n="colorGold">ЗОЛОТО</button>
         <button class="btn" data-color="#4ade80" data-i18n="colorGreen">ЗЕЛЁНЫЙ</button>
-        <button class="btn" data-color="#3db4e6" data-i18n="colorBlue">СИНИЙ</button>
+        <button class="btn" data-color="#2Db4e6" data-i18n="colorBlue">СИНИЙ</button>
       </div>
     </div>
 
@@ -656,7 +656,7 @@
   (function(){
     const translations = {
       ru: {
-        logo: 'СТРЕЛЬБИЩЕ <span class="accent">// 3D</span>',
+        logo: 'СТРЕЛЬБИЩЕ <span class="accent">// 2D</span>',
         badge: 'ТАКТИЧЕСКИЙ ТРЕНАЖЁР',
         scoreLabel: 'ОЧКИ',
         accuracyLabel: 'ТОЧН.',
@@ -712,7 +712,7 @@
         langCode: 'RU'
       },
       en: {
-        logo: 'AIM RANGE <span class="accent">// 3D</span>',
+        logo: 'AIM RANGE <span class="accent">// 2D</span>',
         badge: 'TACTICAL TRAINER',
         scoreLabel: 'SCORE',
         accuracyLabel: 'ACC',
@@ -785,8 +785,8 @@
       document.getElementById('langLabel').textContent = t.langLabel;
       document.documentElement.lang = currentLang;
       document.title = currentLang === 'ru'
-        ? 'СТРЕЛЬБИЩЕ // 3D ТАКТИЧЕСКИЙ ТРЕНАЖЁР'
-        : 'AIM RANGE // 3D TACTICAL TRAINER';
+        ? 'СТРЕЛЬБИЩЕ // 2D ТАКТИЧЕСКИЙ ТРЕНАЖЁР'
+        : 'AIM RANGE // 2D TACTICAL TRAINER';
       updateModeTag();
       updateRecoilIndicator();
     }
@@ -1420,7 +1420,7 @@
         if (proj) drawList.push({ proj, target: t, z: proj.z });
       });
       drawList.sort((a, b) => b.z - a.z);
-      drawList.forEach(item => drawTarget3D(item.target, item.proj));
+      drawList.forEach(item => drawTarget2D(item.target, item.proj));
 
       effects.forEach(eff => {
         if (eff.type === 'flash') drawFlash(eff);
@@ -1464,7 +1464,7 @@
       }
     }
 
-    function drawTarget3D(t, proj) {
+    function drawTarget2D(t, proj) {
       const screenRadius = t.radius * proj.scale;
       const alpha = clamp(1.0 - (proj.z - 10) / 80, 0.3, 1.0);
 
